@@ -10,9 +10,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-task-editor',
   templateUrl: './task-editor.component.html',
-  styles: [`
-.w3-modal { display: block; }
-`]
+  styleUrls: ['./task-editor.component.css']
 })
 export class TaskEditorComponent implements OnInit {
 
@@ -25,17 +23,28 @@ export class TaskEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGrp = this._formBuilder.group({
-      'description': [this.task.description, Validators.required, Validators.max(50)],
-      'priority': [this.task.priority],
-      'startDate': [moment(this.task.startDate).format('YYYY-MM-DD')],
-      'endDate': [moment(this.task.endDate).format('YYYY-MM-DD')]
+      description: [ this.task.description, [
+          Validators.required,
+          Validators.maxLength(50)
+        ]
+      ],
+      priority: [ this.task.priority ],
+      startDate: [ moment(this.task.startDate).format('YYYY-MM-DD') ],
+      endDate: [ moment(this.task.endDate).format('YYYY-MM-DD') ]
+    }, {
+      validators: [
+          this.startDateBeforeEndDateValidator
+      ]
     });
+
+    const controls = this.formGrp.controls;
+
+    controls['startDate'].valueChanges.subscribe(newValue => controls['endDate'].updateValueAndValidity())
   }
 
-  private startDateBeforeEndDateCrossValidation(ctrl: AbstractControl): { [s: string]: boolean } | null {
-    const formGrpValue = this.formGrp.value;
-    if (moment(formGrpValue.startDate).isBefore(formGrpValue.endDate)) {
-      return {startDateIsAfterEndDate: true};
+  private startDateBeforeEndDateValidator(ctrl: AbstractControl): { [s: string]: boolean } | null {
+    if (moment(ctrl.value.startDate).isAfter(ctrl.value.endDate)) {
+      return { startDateIsAfterEndDate: true };
     }
     return null;
   }
@@ -49,13 +58,16 @@ export class TaskEditorComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const formGrpValue = this.formGrp.value;
-    this.task.description = formGrpValue.description;
-    this.task.priority = formGrpValue.priority;
-    this.task.startDate = moment(formGrpValue.startDate).toDate();
-    this.task.endDate = moment(formGrpValue.endDate).toDate();
+    console.log(this.formGrp.value)
+    if (this.formGrp.valid) {
+      const formGrpValue = this.formGrp.value;
+      this.task.description = formGrpValue.description;
+      this.task.priority = formGrpValue.priority;
+      this.task.startDate = moment(formGrpValue.startDate).toDate();
+      this.task.endDate = moment(formGrpValue.endDate).toDate();
 
-    this._taskService.updateTask(this.task);
-    this.close();
+      this._taskService.updateTask(this.task);
+      this.close();
+    }
   }
 }

@@ -1,0 +1,11 @@
+.w3-modal {
+    display: block;
+}
+
+.ng-touched.ng-invalid {
+    border-bottom: 1px solid #f44336 !important;
+}
+
+.ng-touched.ng-valid {
+    border-bottom: 1px solid #009688 !important;
+}

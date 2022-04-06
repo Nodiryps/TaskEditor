@@ -9,10 +9,20 @@
         </div>
 
           <form [formGroup]="formGrp" (ngSubmit)="onSubmit()" class="w3-container" novalidate>
+
               <div class="w3-group">
                   <label>Description</label>
                   <input formControlName="description" class="w3-input">
+                  <div *ngIf="formGrp.controls['description'].dirty">
+                      <p *ngIf="formGrp.controls['description'].hasError('required')" class="w3-text-red">
+                          Required
+                      </p>
+                      <p *ngIf="formGrp.controls['description'].hasError('maxlength')" class="w3-text-red">
+                          Max length: 50
+                      </p>
+                  </div>
               </div>
+
               <div class="w3-group">
                   <label>Priority</label>
                   <select formControlName="priority" class="w3-select">
@@ -21,15 +31,26 @@
                       </option>
                   </select>
               </div>
+
               <div class="w3-group">
                   <label>Start Date</label>
                   <input formControlName="startDate" class="w3-input" type="date">
+                  <p *ngIf="formGrp.controls['startDate'].hasError('startDateIsAfterEndDate')" class="w3-text-red">
+                      startDate <b>Is After</b> endDate
+                  </p>
               </div>
+
               <div class="w3-group">
                   <label>End Date</label>
-                  <input formControlName="endDate" class="w3-input" type="date"></div>
+                  <input formControlName="endDate" class="w3-input" type="date">
+                  <p *ngIf="formGrp.controls['endDate'].hasError('startDateIsAfterEndDate')" class="w3-text-red">
+                      startDate <b>Is After</b> endDate
+                  </p>
+              </div>
+
               <div class="w3-group">
-                  <button type="submit" class="w3-btn w3-padding w3-teal">Save</button>
+                  <button type="submit" class="w3-btn w3-padding w3-teal"
+                  [disabled]="formGrp.invalid">Save</button>
               </div>
           </form>
 
