@@ -1,0 +1,39 @@
+<div class="w3-modal">
+  <div class="w3-modal-content">
+    <div>
+      <span class="w3-closebtn w3-margin" (click)="close()">×</span>
+      <div>
+
+        <div class="w3-container w3-teal">
+          <h2>Editor</h2>
+        </div>
+
+          <form [formGroup]="formGrp" (ngSubmit)="onSubmit()" class="w3-container" novalidate>
+              <div class="w3-group">
+                  <label>Description</label>
+                  <input formControlName="description" class="w3-input">
+              </div>
+              <div class="w3-group">
+                  <label>Priority</label>
+                  <select formControlName="priority" class="w3-select">
+                      <option *ngFor="let priority of priorities" [ngValue]="priority">
+                          {{getNameForPriority(priority)}}
+                      </option>
+                  </select>
+              </div>
+              <div class="w3-group">
+                  <label>Start Date</label>
+                  <input formControlName="startDate" class="w3-input" type="date">
+              </div>
+              <div class="w3-group">
+                  <label>End Date</label>
+                  <input formControlName="endDate" class="w3-input" type="date"></div>
+              <div class="w3-group">
+                  <button type="submit" class="w3-btn w3-padding w3-teal">Save</button>
+              </div>
+          </form>
+
+      </div>
+    </div>
+  </div>
+</div>
